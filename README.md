@@ -1,91 +1,57 @@
-# Robotics
-Lab 7 of the robotics course in Hanze
+# Robotics Simulation Project
 
----
+This repository contains simulation code for a line-following and path-navigating robot using Webots. The primary controller script is located in [`webots_code/webots_controller_v4_final.py`](webots_code/webots_controller_v4_final.py). The system is designed to work in conjunction with an ESP32 microcontroller over UART or Wi-Fi to receive navigation commands and sensor data.
 
-# Overview
+## Features
 
-- The **ESP32** acts as the path planner, using Dijkstra's algorithm on a predefined graph to calculate the optimal route.
-- The **Webots robot** executes movement commands received from the ESP32 and returns sensor data (ground sensors) for feedback.
-- Communication is done via **Wi-Fi sockets**.
+- **Webots Simulation**: Uses the Webots simulator for realistic robot physics and environment interaction.
+- **Line-Following**: Robot can follow black lines on a white background using ground sensors.
+- **Node-Based Navigation**: Robot detects nodes (intersections) and navigates using predefined paths.
+- **ESP32 Communication**: Path planning is offloaded to an ESP32 running Dijkstra's algorithm; communication is done via serial or Wi-Fi socket.
+- **Command Handling**: Receives instructions such as `forward_bit`, `turn_left`, `turn_right`, and `stop`.
 
----
+## How It Works
 
-# Requirements
+1. **Robot Behavior**:
+   - Follows a line using three ground sensors.
+   - Detects nodes by reading all sensors as active (111).
+   - Awaits commands from ESP32 to determine next movement.
 
-### Hardware
-- ESP32 board (DOIT ESP32 DevKit or similar)
-- Wi-Fi access point
+2. **ESP32 Role**:
+   - Calculates optimal path using Dijkstra's algorithm.
+   - Sends movement commands via UART or TCP to Webots.
 
-# Software
-- MicroPython firmware for ESP32
-- Thonny IDE (or ampy for file upload)
-- Webots simulator (https://cyberbotics.com)
-- Python 3.x (on the host machine running Webots)
+3. **Movement Commands**:
+   - `forward_bit`: Move forward a segment.
+   - `turn_left` / `turn_right`: Rotate and re-align to new direction.
+   - `stop`: Stop at the goal.
 
----
+## Requirements
 
-# Dependencies
+- Webots (tested with R2023b and later)
+- Python controller environment enabled in Webots
+- ESP32 (MicroPython or Arduino-based)
+- PC and ESP32 on same network (for Wi-Fi mode)
 
-# On ESP32
-- MicroPython standard libraries:
-  - `network`, `socket`, `ujson`, `machine`, `time`
+## Usage
 
-# On Host (Webots)
-- Webots API (`controller`)
-- Python standard libraries:
-  - `socket`, `json`, `time`
+1. Open your Webots project world.
+2. Assign the robot the controller `webots_controller_v4_final`.
+3. Start the simulation.
+4. Ensure ESP32 is running its path-planning script and connected.
 
-No external pip packages are required.
+## To Do
 
----
+- Improve error handling in communication
+- Add obstacle detection and avoidance
+- Expand to multiple robots
+- Visualize path in simulation (future feature)
 
-# Setup Instructions
+## Author
 
-# 1. ESP32 Setup
-- Flash MicroPython to your ESP32 using [official instructions](https://micropython.org/download/esp32/).
-- Open `esp32_code/esp32_controller.py` in Thonny and upload it to the ESP32.
-- Edit the `ssid` and `password` in the code to match your Wi-Fi network.
+Developed by Dima5654, 
+GitHub: [https://github.com/dima5654](https://github.com/dima5654)
 
-# 2. Webots Setup
-- Open Webots and create or open your robot simulation.
-- Assign `webots_code/webots_controller.py` as the robot controller.
-- Ensure the `ESP32_IP` in the Python script matches the actual IP of your ESP32.
+## License
 
----
-
-# Running the System
-
-1. Power on the ESP32 and ensure it connects to Wi-Fi.
-2. Start the Webots simulation.
-3. The ESP32 will send `"ready"`, then receive start/goal nodes.
-4. The robot will move and detect nodes using ground sensors (`gs0`, `gs1`, `gs2`).
-5. The ESP32 handles logic, and Webots executes motion commands.
-
----
-
-# Function Documentation
-
-# `esp32_controller_version_1.py`
-- `dijkstra(graph, start, goal)`: Calculates the shortest path using Dijkstra's algorithm.
-- `get_turn(current_node, next_node)`: Computes turn direction between path nodes.
-- Main loop handles sensor decoding, node detection, and motion decisions.
-
-# `webots_controller_version_1.py`
-- Main state machine:
-  - `forward`, `turn_left`, `turn_right`, `forward_bit`, `stop`
-- Sends ground sensor values to ESP32 and executes movement commands.
-
----
-
-# Reproducibility Tips
-
-- Set breakpoints or `print()` in both ESP32 and Webots code to debug synchronization.
-- Always reset simulation before rerunning to avoid duplicate socket connections.
-- Tune sensor thresholds and delay values in `webots_controller.py` for smoother behavior.
-
----
-
-# License
-
-Educational use only – Robotics Course, Hanze University of Applied Sciences
+This project is licensed under the MIT License. See `LICENSE` for details.
