@@ -40,18 +40,4 @@ This repository contains simulation code for a line-following and path-navigatin
 3. Start the simulation.
 4. Ensure ESP32 is running its path-planning script and connected.
 
-## To Do
 
-- Improve error handling in communication
-- Add obstacle detection and avoidance
-- Expand to multiple robots
-- Visualize path in simulation (future feature)
-
-## Author
-
-Developed by Dima5654, 
-GitHub: [https://github.com/dima5654](https://github.com/dima5654)
-
-## License
-
-This project is licensed under the MIT License. See `LICENSE` for details.
